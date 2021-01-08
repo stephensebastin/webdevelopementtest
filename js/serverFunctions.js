@@ -20,6 +20,145 @@ function getEnrichedData(companyName) {
     } else {
         return JSON.parse(noData);
     }
+}
+
+document.getElementById("search_value").addEventListener("keydown", function(event) {
+    // Number 13 is the "Enter" key
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        document.getElementById("search_icon").click();
+    }
+  });
+
+document.getElementById("search_icon").onclick = function(event) {
+    let search_value = document.getElementById('search_value').value;
+    let content = getEnrichedData(search_value);
+    let defaul_div = document.getElementById("default_content");
+    let company_div = document.getElementById("company_content");
+    if(content.message.includes("dataNotFound")) {
+        document.getElementById("error_message").innerHTML = "Company not found. Try Another";
+    }
+    else {
+        document.getElementById("error_message").innerHTML = "";
+        if(defaul_div.classList.contains("show")) {
+            defaul_div.classList.remove("show");
+            company_div.classList.add("show");
+        }
+        let i=0;
+        // console.log(content.leadInfos[0]);
+        document.getElementById("company_logo").src = `${content.leadInfos[0].LOGO}`;
+        document.getElementById("company_name").innerHTML = `${content.leadInfos[0].ORG_NAME}`;
+        document.getElementById("company_location").innerHTML = `${content.leadInfos[0].HEADQUARTER}`;
+        document.getElementById("company_industry").innerHTML = `<b>Industry: ${Object.keys(content.leadInfos[0].INDUSTRY)[0]}</b><br>${Object.values(content.leadInfos[0].INDUSTRY)[0]}`;
+        document.getElementById("company_website").href = `${content.leadInfos[0].WEBSITE}`;
+        document.getElementById("company_about").href = `${content.leadInfos[0].ABOUTUS}`;
+        document.getElementById("fb").href = `https://${content.leadInfos[0].SOCIAL_LINK.FACEBOOK}`;
+        document.getElementById("insta").href = `https://${content.leadInfos[0].SOCIAL_LINK.INSTAGRAM}`;
+        document.getElementById("twitter").href = `https://${content.leadInfos[0].SOCIAL_LINK.TWITTER}`;
+        document.getElementById("yt").href = `https://${content.leadInfos[0].SOCIAL_LINK.YOUTUBE}`;
+        document.getElementById("linkedin").href = `https://${content.leadInfos[0].SOCIAL_LINK.LINKEDIN}`;
+        //insert for altr social media links
 
 
+        //////////////////////////////////////techno
+        if(content.leadInfos[0].TECHNOGRAPHICDATA == null) {
+            document.getElementById("company_tech_data").innerHTML = "<p class='nodata_message'>No Data Available</p>";
+        }
+        else {
+            let tech_keys = Object.keys(content.leadInfos[0].TECHNOGRAPHICDATA);
+            let tech_data = Object.values(content.leadInfos[0].TECHNOGRAPHICDATA);
+            document.getElementById("company_tech_data").innerHTML = "";
+            for(i=0;i<tech_data.length;i++) {
+                document.getElementById("company_tech_data").insertAdjacentHTML("afterbegin",`<p class="para_text"><b>${tech_keys[i]}:</b><br>${tech_data[i]}</p>`)
+            }
+        }
+
+        //////////////////////////////////////description
+        if(content.leadInfos[0].DESCRIPTION != null) {
+            document.getElementById("company_description").innerHTML = `<b>Desciption</b><br>${Object.values(content.leadInfos[0].DESCRIPTION)[0]}`;
+        }
+        else {
+            document.getElementById("company_description").innerHTML = "<b>Desciption</b><br><p  class='nodata_message'>No data Available</p>";
+        }
+        let aliases = content.leadInfos[0].ALIAS_ORG_NAME;
+        if(aliases!=null){
+            let text = `<br><b>Aliases</b><br>${aliases[0]}`;
+            for(i=1;i<aliases.length;i++) {
+                text += `, ${aliases[i]}`;
+            }
+            document.getElementById("company_aliases").innerHTML = text;
+        }
+        else {
+            document.getElementById("company_aliases").innerHTML = "";
+        }
+        document.getElementById("company_ceo").innerHTML = `<b>CEO</b><br>${content.leadInfos[0].CEO}`;
+        document.getElementById("company_revenue").innerHTML = `<b>Revenue</b><br>${content.leadInfos[0].REVENUE}`;
+        document.getElementById("company_ownership").innerHTML = `<b>Ownership</b><br>${content.leadInfos[0].OWNERSHIP}`;
+        document.getElementById("company_no_employees").innerHTML = `<b>No. Employees</b><br>${content.leadInfos[0].NO_OF_EMPLOYEES}`;
+
+
+        //////////////////////////////////////contact
+        let flag = true;
+        document.getElementById("company_email").innerHTML = "";
+        if(content.leadInfos[0].EMAIL_1 != null) {
+            document.getElementById("company_email").insertAdjacentHTML("afterbegin",`<li><p class="para_text">${content.leadInfos[0].EMAIL_1}</p></li>`);
+            flag = false;
+        }
+        if(content.leadInfos[0].EMAIL_2 != null) {
+            document.getElementById("company_email").insertAdjacentHTML("afterbegin",`<li><p class="para_text">${content.leadInfos[0].EMAIL_2}</p></li>`);
+            flag = false;
+        }
+        if(content.leadInfos[0].ALTR_EMAIL != null) {
+            let res = content.leadInfos[0].ALTR_EMAIL.split(",");
+            for(i=0;i<res.length;i++){
+                document.getElementById("company_email").insertAdjacentHTML("afterbegin",`<li><p class="para_text">${res[i]}</p></li>`);
+            }
+            flag = false;
+        }
+        if (flag) {
+            document.getElementById("company_email").innerHTML = "<li class='nodata_message'>No Data Available</li>";
+        }
+        
+        flag = true;
+        document.getElementById("company_ph").innerHTML = "";
+        if(content.leadInfos[0].CONTACT_1 != null) {
+            document.getElementById("company_ph").insertAdjacentHTML("afterbegin",`<li><p class="para_text">${content.leadInfos[0].CONTACT_1}</p></li>`);
+            flag = false;
+        }
+        if(content.leadInfos[0].CONTACT_2 != null) {
+            document.getElementById("company_ph").insertAdjacentHTML("afterbegin",`<li><p class="para_text">${content.leadInfos[0].CONTACT_2}</p></li>`);
+            flag = false;
+        }
+        if(content.leadInfos[0].ALTR_CONTACT != null) {
+            let res = content.leadInfos[0].ALTR_CONTACT.split(",");
+            for(i=0;i<res.length;i++){
+                document.getElementById("company_ph").insertAdjacentHTML("afterbegin",`<li><p class="para_text">${res[i]}</p></li>`);
+            }
+            flag = false;
+        }
+        if (flag) {
+            document.getElementById("company_ph").innerHTML = "<li class='nodata_message'>No Data Available</li>";
+        }
+
+        flag = true;
+        document.getElementById("company_address").innerHTML = "";
+        if(content.leadInfos[0].ADDRESS_1 != null) {
+            document.getElementById("company_address").insertAdjacentHTML("afterbegin",`<li><p class="para_text">${content.leadInfos[0].ADDRESS_1.ID}</p></li>`);
+            flag = false;
+        }
+        if(content.leadInfos[0].ADDRESS_2 != null) {
+            document.getElementById("company_address").insertAdjacentHTML("afterbegin",`<li><p class="para_text">${content.leadInfos[0].ADDRESS_2.ID}</p></li>`);
+            flag = false;
+        }
+        if(content.leadInfos[0].ALTR_ADDRESS != null) {
+            let res = content.leadInfos[0].ALTR_ADDRESS;
+            for(i=0;i<res.length;i++){
+                document.getElementById("company_address").insertAdjacentHTML("afterbegin",`<li><p class="para_text">${res[i].ID}</p></li>`);
+            }
+            flag = false;
+        }
+        if (flag) {
+            document.getElementById("company_address").innerHTML = "<li class='nodata_message'>No Data Available</li>";
+        }
+    }
 }
