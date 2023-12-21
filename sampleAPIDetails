@@ -1,5 +1,0 @@
-Vendor API Key
-  GET  ::   https://api.peopledatalabs.com/v5/person/enrich?pretty=true&api_key=13cb120e193fde284cdce963f6d781febe5854a4770e7fb2e6662afbe72ff0ad&company=Zoho Corporation&email=nanya@zohocorp.com
-
-
-Docs : https://docs.peopledatalabs.com/docs/quickstart
